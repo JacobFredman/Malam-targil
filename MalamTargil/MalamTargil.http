@@ -1,0 +1,6 @@
+@MalamTargil_HostAddress = http://localhost:5219
+
+GET {{MalamTargil_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
