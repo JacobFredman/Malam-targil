@@ -9,9 +9,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IResidentService, ResidentsService>();
-
+builder.Services.AddCors(opts =>
+opts.AddPolicy("AllowReactApp", p =>
+p.WithOrigins("http://localhost:5173")
+.AllowAnyHeader()
+.AllowAnyMethod()
+)
+);
 var app = builder.Build();
-
+app.UseCors("AllowReactApp");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
