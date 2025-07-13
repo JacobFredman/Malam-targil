@@ -1,125 +1,102 @@
 import React, { useState, useEffect } from 'react';
 
-const ResidentsList = () => {
-  const [residents, setResidents] = useState([]);
+const residentsList = () => {
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchResidents = async () => {
+    const fetchUserData = async () => {
       try {
-        // setLoading(true);
-        // setError(null);
-        
-        // const response = await fetch('/api/residents');
-
-        const residents = [
-    { id: 1, name: "Alice Johnson" },
-    { id: 2, name: "Bob Smith" },
-    { id: 3, name: "Carol Williams" },
-    { id: 4, name: "David Brown" },
-    { id: 5, name: "Emma Davis" },
-    { id: 6, name: "Frank Wilson" },
-    { id: 7, name: "Grace Miller" },
-    { id: 8, name: "Henry Taylor" }
-  ];
-
-  response = residents;
+        setLoading(true);
+        // Replace with your actual API endpoint
+        const response = await fetch('http://127.0.0.1:5219/api/Residents');
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        setResidents(data);
+        setUserData(data);
       } catch (err) {
         setError(err.message);
+        console.error('Error fetching user data:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchResidents();
+    fetchUserData();
   }, []);
 
-  // Loading state
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const getPaymentType = (type) => {
+    // You can customize this based on what type 0, 1, etc. represent
+    const types = {
+      0: 'Credit Card',
+      1: 'Debt',
+    };
+    return types[type] || 'Unknown';
+  };
+
   if (loading) {
     return (
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Residents List
-        </h2>
-        <div className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          <span className="ml-2 text-gray-600">Loading residents...</span>
+      <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Residents List</h1>
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-gray-600">Loading...</span>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Residents List
-        </h2>
-        <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">Error loading residents: {error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Empty state
-  if (residents.length === 0) {
-    return (
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Residents List
-        </h2>
-        <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <p className="text-gray-600">No residents found.</p>
+      <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Residents List</h1>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Error loading data</h3>
+              <p className="text-sm text-red-700 mt-1">{error}</p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Residents List
-      </h2>
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Residents List</h1>
       
-      <div className="space-y-3">
-        {residents.map((resident) => (
-          <div 
-            key={resident.id} 
-            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
-          >
-            <div className="flex items-center space-x-3">
-              <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white text-sm font-medium rounded-full">
-                {resident.id}
-              </span>
-              <span className="text-gray-800 font-medium">
-                {resident.name}
-              </span>
+      <div className="space-y-6">
+        {userData.map((user) => (
+          <div key={user.id} className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 capitalize">
+                {user.name}
+              </h2>
+              <span className="text-sm text-gray-500">ID: {user.id}</span>
             </div>
           </div>
         ))}
-      </div>
-      
-      <div className="mt-6 text-center text-sm text-gray-500">
-        Total residents: {residents.length}
       </div>
     </div>
   );
 };
 
-export default ResidentsList;
+export default residentsList;
